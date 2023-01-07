@@ -1,14 +1,13 @@
 # Twitter Downloader
 
-[![Upload Python Package](https://github.com/rly0nheart/twitter-video-downloader/actions/workflows/python-publish.yml/badge.svg)](https://github.com/rly0nheart/twitter-video-downloader/actions/workflows/python-publish.yml)
 [![CodeQL](https://github.com/rly0nheart/twitter-video-downloader/actions/workflows/codeql.yml/badge.svg)](https://github.com/rly0nheart/twitter-video-downloader/actions/workflows/codeql.yml)
 
 A program for downloading videos from Twitter, given a video url
 
 # Installation
-**Install from PyPI**
+## Install with pip
 ```
-pip install twitter-video-downloader
+pip install git+https://github.com/rly0nheart/twitter-video-downloader
 ```
 
 ### Note
@@ -16,10 +15,13 @@ pip install twitter-video-downloader
 >> The program is dependent on selenium, so in order to run it, you will have to download and properly setup geckodriver (setup instructions available below)
 
 # Docker
-**Pull the image**
+## Build
 ```
-docker pull rly0nheart/twitter-video-downloader:twitter-video-downloader
+docker build -t twitter-video-downloader .
 ```
+### Note
+> The docker image will download and setup geckodriver
+
 # Geckodriver setup
 ## Linux
 **1. Go to the geckodriver [releases page](https://github.com/mozilla/geckodriver/releases/). Find the latest version of the driver for your platform and download it**
@@ -56,19 +58,20 @@ twitter_video_downloader <video-url>
 
 # Docker
 ```
- docker run -it -v $PWD/downloads:/app/downloads twitter-video-downloader <twitter_video_url>
+ docker run -it -v $PWD/twitter_downloads:/app/twitter_downloads twitter-video-downloader <twitter_video_url>
 ```
 ## Note
 > The url format should be as follows;  https://twitter.com/i/status/0101011010010101101
 
 
 # Optional Arguments
-| Flag              |       Description        |          Choices           | Default |
-|-------------------|:------------------------:|:--------------------------:|:-------:|
-| *-r/--resolution* | specify video resolution |    [576x1024, 480x652]     | 320x568 |
+| Flag             |      Description      |       Choices       | Default |
+|------------------|:---------------------:|:-------------------:|:-------:|
+| ``-q/--quality`` | specify video quality | [576x1024, 480x652] | 320x568 |
+| ``-d/--debug``   |   enable debug mode   |                     |         |
 
 # Donations
-If you would like to donate, you could Buy A Coffee for the developer using the button below
+If you would like my work and would like to support, you could Buy Me A Coffee using the button below
 
 <a href="https://www.buymeacoffee.com/189381184" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
