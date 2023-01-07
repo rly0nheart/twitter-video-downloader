@@ -5,7 +5,7 @@ def downloader():
     try:
         TwitterVideoDownloader().download_video()
     except KeyboardInterrupt:
-        print("[CTRLC] Process interrupted with Ctrl+C")
+        raise Exception("Process interrupted with Ctrl+C")
 
     except Exception as e:
-        print("[ERROR] An error occurred:", e)
+        raise Exception(e)

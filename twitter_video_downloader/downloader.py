@@ -1,4 +1,5 @@
 import os
+import logging
 import argparse
 import requests
 from tqdm import tqdm
@@ -8,31 +9,30 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
-version_tag = "2023.1.0.0"
+version_tag = "1.0.0"
 update_check_endpoint = "https://api.github.com/repos/rly0nheart/twitter-video-downloader/releases/latest"
 
 
 # create the downloads directory if it doesn't already exist
 def path_finder():
-    os.makedirs("../downloads", exist_ok=True)
+    os.makedirs("twitter_downloads", exist_ok=True)
 
 
 # print license note
 def notice():
-    path_finder()
-    notice_msg = f"""
+    return f"""
     twitter-video-downloader {version_tag} Copyright (C) 2023  Richard Mwewa
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
     """
-    print(notice_msg)
 
 
 # check for updates via the GitHub api
 def check_updates():
-    notice()
+    path_finder()
+    print(notice())
     response = requests.get(update_check_endpoint).json()
     if response['tag_name'] == version_tag:
         # ignore if the program is up-to-date
@@ -47,9 +47,10 @@ class TwitterVideoDownloader:
         parser = argparse.ArgumentParser(description="twitter-video-downloader — by Richard Mwewa  | https://about.me/rly0nheart")
         parser.add_argument("url", help="twitter video url (eg. https://twitter.com/i/status/0101011010010101101")
         parser.add_argument("-q", "--quality", help="choose video quality (default: %(default)s)", choices=["576x1024", "480x652"], default="320x568")
-        parser.add_argument("-d", "--debug", help="enable debug mode (returns network logs)", action="store_true")
+        parser.add_argument("-d", "--debug", help="enable debug mode", action='store_true')
         self.args = parser.parse_args()
-
+        if self.args.debug:
+            logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%H:%M:%S%p', level=logging.DEBUG)
         # set selenium to --headless (hides the firefox browser)
         option = webdriver.FirefoxOptions()
         option.add_argument("--headless")
@@ -57,6 +58,7 @@ class TwitterVideoDownloader:
         self.download_endpoint = "https://twittervideodownloader.com"
 
     # select video quality
+    # returns xpath_element
     def video_quality(self):
         if self.args.quality == "480x652":
             xpath_element = "/html/body/div[2]/div/center/div[7]/div[1]/a"
@@ -67,20 +69,22 @@ class TwitterVideoDownloader:
 
         return xpath_element
 
+    # download video
     def download_video(self):
         path_finder()
+        print(f"Started downloader with {self.args.url}")
         self.driver.get(self.download_endpoint)
         url_entry_field = self.driver.find_element(By.NAME, "tweet")
         url_entry_field.send_keys(self.args.url)
         url_entry_field.send_keys(Keys.ENTER)
-        print("[LOAD] Please wait...")
+        print("Loading web resource, please wait..")
         download_btn = WebDriverWait(self.driver, 20).until(expected_conditions.presence_of_element_located((By.XPATH, self.video_quality())))
         video_url = download_btn.get_attribute('href')
 
         with requests.get(video_url, stream=True) as response:
             response.raise_for_status()
-            with open(os.path.join("../downloads", f"{self.args.url[29:]}.mp4"), "wb") as file:
-                for chunk in tqdm(response.iter_content(chunk_size=8192), desc=f"[{self.args.quality}] Downloading: {file.name}"):
+            with open(os.path.join("twitter_downloads", f"{self.args.url[29:]}.mp4"), 'wb') as file:
+                for chunk in tqdm(response.iter_content(chunk_size=8192), desc=f"Downloading {file.name}"):
                     file.write(chunk)
-                print(f"[{self.args.quality}] Downloaded:", file.name)
+                print(f"{self.args.quality} Downloaded:", file.name)
         self.driver.close()
