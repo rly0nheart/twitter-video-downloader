@@ -1,4 +1,6 @@
 # Twitter Downloader
+![Screenshot 2023-01-07 043340](https://user-images.githubusercontent.com/74001397/211127644-4caa35c2-7afe-4555-bb7d-21a363448ba2.png)
+
 
 [![CodeQL](https://github.com/rly0nheart/twitter-video-downloader/actions/workflows/codeql.yml/badge.svg)](https://github.com/rly0nheart/twitter-video-downloader/actions/workflows/codeql.yml)
 
