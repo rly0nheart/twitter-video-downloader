@@ -38,7 +38,7 @@ def check_updates():
         # ignore if the program is up-to-date
         pass
     else:
-        print(f"[UPDATE] A new release is available ({response['tag_name']}). Run 'pip install --upgrade twitter-video-downloader' to get the updates.")
+        print(f"[UPDATE] A new release is available ({response['tag_name']}). Run 'pip install --force-reinstall --no-deps git+git://github.com/rly0nheart/twitter-video-downloader' to get the updates.")
 
 
 class TwitterVideoDownloader:
