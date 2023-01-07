@@ -11,8 +11,8 @@ pip install git+https://github.com/rly0nheart/twitter-video-downloader
 ```
 
 ### Note
-> You will need to have the FireFox browser installed on your pc (for the PyPI Package)
->> The program is dependent on selenium, so in order to run it, you will have to download and properly setup geckodriver (setup instructions available below)
+> You will need to have the FireFox browser installed on your pc (pip package)
+>> The program is dependent on selenium, so in order to run it, you will also have to download and properly setup geckodriver (see setup instructions available below)
 
 # Docker
 ## Build
