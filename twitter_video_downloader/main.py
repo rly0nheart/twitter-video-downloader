@@ -1,7 +1,7 @@
 from twitter_video_downloader.downloader import TwitterVideoDownloader
 
 
-def downloader():
+def start_downloader():
     try:
         TwitterVideoDownloader().download_video()
     except KeyboardInterrupt:

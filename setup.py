@@ -1,12 +1,14 @@
 import setuptools
 
+from twitter_video_downloader import __author__, __version__
+
 with open('README.md', 'r', encoding='utf-8') as file:
     long_description = file.read()
 
 setuptools.setup(
     name='twitter-video-downloader',
-    version='1.0.0',
-    author='Richard Mwewa',
+    version=__version__,
+    author=__author__,
     author_email='rly0nheart@duck.com',
     packages=['twitter_video_downloader'],
     description='Twitter video downloader',
@@ -25,7 +27,7 @@ setuptools.setup(
         ],
     entry_points={
         'console_scripts': [
-            'twitter_video_downloader=twitter_video_downloader.main:downloader',
+            'twitter_video_downloader=twitter_video_downloader.main:start_downloader',
         ]
     },
 )

@@ -1,6 +1,7 @@
 import os
 import logging
 import argparse
+
 import requests
 from tqdm import tqdm
 from selenium import webdriver
@@ -9,19 +10,20 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
-version_tag = "1.0.0"
-update_check_endpoint = "https://api.github.com/repos/rly0nheart/twitter-video-downloader/releases/latest"
+from . import __author__, __about__, __version__
 
+update_check_endpoint = "https://api.github.com/repos/rly0nheart/twitter-video-downloader/releases/latest"
+downloads_directory = os.path.join(os.path.expanduser("~"), "twitter-video-downloader")
 
 # create the downloads directory if it doesn't already exist
 def path_finder():
-    os.makedirs("twitter_downloads", exist_ok=True)
+    os.makedirs(downloads_directory, exist_ok=True)
 
 
 # print license note
 def notice():
     return f"""
-    twitter-video-downloader {version_tag} Copyright (C) 2023  Richard Mwewa
+    twitter-video-downloader {__version__} Copyright (C) 2022-2023  Richard Mwewa
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,17 +36,15 @@ def check_updates():
     path_finder()
     print(notice())
     response = requests.get(update_check_endpoint).json()
-    if response['tag_name'] == version_tag:
-        # ignore if the program is up-to-date
-        pass
-    else:
-        print(f"[UPDATE] A new release is available ({response['tag_name']}). Run 'pip install --force-reinstall --no-deps git+git://github.com/rly0nheart/twitter-video-downloader' to get the updates.")
+    remote_version = response.get("tag_name")
+    if remote_version != __version__:
+        print(f"[UPDATE] A new release is available ({remote_version}). Run 'pip install --force-reinstall --no-deps git+git://github.com/rly0nheart/twitter-video-downloader' to get the updates.")
 
 
 class TwitterVideoDownloader:
     def __init__(self):
         # create argument parser
-        parser = argparse.ArgumentParser(description="twitter-video-downloader — by Richard Mwewa  | https://about.me/rly0nheart")
+        parser = argparse.ArgumentParser(description=f"twitter-video-downloader — by {__author__} ({__about__})")
         parser.add_argument("url", help="twitter video url (eg. https://twitter.com/i/status/0101011010010101101")
         parser.add_argument("-q", "--quality", help="choose video quality (default: %(default)s)", choices=["576x1024", "480x652"], default="320x568")
         parser.add_argument("-d", "--debug", help="enable debug mode", action='store_true')
@@ -83,7 +83,7 @@ class TwitterVideoDownloader:
 
         with requests.get(video_url, stream=True) as response:
             response.raise_for_status()
-            with open(os.path.join("twitter_downloads", f"{self.args.url[29:]}.mp4"), 'wb') as file:
+            with open(os.path.join(downloads_directory, f"{self.args.url[29:]}.mp4"), 'wb') as file:
                 for chunk in tqdm(response.iter_content(chunk_size=8192), desc=f"Downloading {file.name}"):
                     file.write(chunk)
                 print(f"{self.args.quality} Downloaded:", file.name)
